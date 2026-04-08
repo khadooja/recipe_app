@@ -213,7 +213,7 @@ class _CardBody extends StatelessWidget {
               if (recipe.ingredients.isNotEmpty) ...[
                 const SizedBox(width: 12),
                 Icon(
-                  Icons.grocery_outlined,
+                  Icons.list_alt_outlined,
                   size: 14,
                   color: theme.colorScheme.primary,
                 ),
