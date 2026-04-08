@@ -133,12 +133,13 @@ No `build_runner` / `hive_generator` — the TypeAdapter will be hand-written to
 
 ## 6. Future-Readiness Hooks
 
-| Future Feature | What we set up now |
-|---|---|
-| **Favorites** | `isFavorite` field on `Recipe`; `features/favorites/` folder ready |
-| **Search** | `category` field for filtering; `features/search/` folder ready |
-| **Remote API** | Repository pattern means swapping `LocalDatasource` for `RemoteDatasource` requires zero UI changes |
-| **Image upload** | `imagePath` field supports both asset paths and URLs |
+- Add and manage recipes
+- Mark recipes as favorites ❤️
+- Local storage using Hive
+- Clean and scalable architecture
+- State management using Riverpod
+- Ready for future features (Search, API, etc.)
+
 
 ---
 
@@ -181,14 +182,6 @@ No `build_runner` / `hive_generator` — the TypeAdapter will be hand-written to
 
 #### [NEW] `lib/app.dart`
 - `RecipeApp` widget returning `MaterialApp`
-
----
-
-### Feature Placeholders
-#### [NEW] `lib/features/home/.gitkeep`
-#### [NEW] `lib/features/recipe_detail/.gitkeep`
-#### [NEW] `lib/features/favorites/.gitkeep`
-#### [NEW] `lib/features/search/.gitkeep`
 
 ---
 
