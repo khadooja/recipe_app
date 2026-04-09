@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
 /// Semi-transparent circular button used in the app bar
 class _CircleIconButton extends StatelessWidget {
   final IconData icon;

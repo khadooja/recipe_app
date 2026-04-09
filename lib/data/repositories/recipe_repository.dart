@@ -1,6 +1,6 @@
-import '../datasources/local/recipe_local_datasource.dart';
 import '../models/recipe.dart';
-
+import '../datasources/local/recipe_local_datasource.dart';
+/*
 /// ─── Recipe Repository ────────────────────────────────────────────
 ///
 /// Sits between the datasource and the Riverpod providers.
@@ -34,14 +34,34 @@ class RecipeRepository {
   // ── Write ──────────────────────────────────────────────────────
 
   /// Persists a new [recipe].
-  Future<void> addRecipe(Recipe recipe) => _datasource.add(recipe);
+  Future<void> addRecipe(Recipe recipe) => _datasource.addRecipe(recipe);
 
   /// Replaces the stored recipe that shares [recipe.id].
-  Future<void> updateRecipe(Recipe recipe) => _datasource.update(recipe);
+  Future<void> updateRecipe(Recipe recipe) => _datasource.updateRecipe(recipe);
 
   /// Removes the recipe with the given [id].
-  Future<void> deleteRecipe(String id) => _datasource.delete(id);
+  Future<void> deleteRecipe(String id) => _datasource.deleteRecipe(id);
 
   /// Flips the `isFavorite` flag for the recipe with the given [id].
-  Future<bool> toggleFavorite(String id) => _datasource.toggleFavorite(id);
+  Future<bool> toggleFavorite(String id) => _datasource.toggleFavoriteRecipe(id);
+}*/
+// lib/data/repositories/recipe_repository.dart
+
+
+
+class RecipeRepository {
+  final RecipeLocalDatasource _datasource;
+
+  const RecipeRepository(this._datasource);
+
+  List<Recipe> getAllRecipes() => _datasource.getAllRecipes();
+
+  Future<void> addRecipe(Recipe recipe) =>
+      _datasource.addRecipe(recipe);
+
+  Future<void> updateRecipe(Recipe recipe) =>
+      _datasource.updateRecipe(recipe);
+
+  Future<void> deleteRecipe(String id) =>
+      _datasource.deleteRecipe(id);
 }

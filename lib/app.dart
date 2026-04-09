@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:recipe_app/features/presentation/screens/home_screen.dart';
+
 
 /// Root widget of the application.
 ///
