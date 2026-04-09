@@ -1,27 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../data/models/recipe.dart';
 
-/// ─── Recipe Card ──────────────────────────────────────────────────
-///
-/// Displays a single recipe in a vertical list.
-///
-/// Widget tree:
-/// ```
-/// Card
-///   └── InkWell (tap → recipe detail)
-///         └── Column
-///               ├── _CardImage      (top, fixed-height image with overlay)
-///               └── _CardBody       (title + cooking time + favorite chip)
-/// ```
-///
-/// **Usage:**
-/// ```dart
-/// RecipeCard(
-///   recipe: recipe,
-///   onTap: () => Navigator.push(...),
-///   onFavoriteTap: () => ref.read(recipeProvider.notifier).toggleFavorite(recipe.id),
-/// )
-/// ```
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback? onTap;
@@ -36,17 +15,18 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Card(
-      clipBehavior: Clip.antiAlias, // image respects rounded corners
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _CardImage(recipe: recipe, onFavoriteTap: onFavoriteTap),
-            _CardBody(recipe: recipe, theme: theme),
+            _CardImage(
+              recipe: recipe,
+              onFavoriteTap: onFavoriteTap,
+            ),
+            _CardBody(recipe: recipe),
           ],
         ),
       ),
@@ -54,14 +34,16 @@ class RecipeCard extends StatelessWidget {
   }
 }
 
-// ── Sub-widgets ──────────────────────────────────────────────────────
+// ── Image Section (محسّن + نفس تصميمك) ─────────────────────────────
 
-/// Top section of the card: image with a favorite icon overlay.
 class _CardImage extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback? onFavoriteTap;
 
-  const _CardImage({required this.recipe, this.onFavoriteTap});
+  const _CardImage({
+    required this.recipe,
+    this.onFavoriteTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +52,13 @@ class _CardImage extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // ── Recipe image ──────────────────────────────────────
-          _buildImage(),
+          // ✅ Hero + Image مفصول
+          Hero(
+            tag: 'recipe_image_${recipe.id}',
+            child: const _RecipeImageWrapper(),
+          ),
 
-          // ── Gradient overlay for readability ──────────────────
+          // ✅ Gradient overlay (رجعناه 👌)
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -84,7 +69,7 @@ class _CardImage extends StatelessWidget {
             ),
           ),
 
-          // ── Favorite button (top-right) ───────────────────────
+          // ✅ زر المفضلة فوق
           Positioned(
             top: 8,
             right: 8,
@@ -97,92 +82,115 @@ class _CardImage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildImage() {
-    if (recipe.imageUrl.isEmpty) {
-      return _PlaceholderImage();
-    }
+// ── Image Wrapper (يحافظ على AspectRatio) ─────────────────────────
 
-    // Network image with error fallback
-    return Image.network(
-      recipe.imageUrl,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _PlaceholderImage(),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return _PlaceholderImage(isLoading: true);
-      },
+class _RecipeImageWrapper extends StatelessWidget {
+  const _RecipeImageWrapper();
+
+  @override
+  Widget build(BuildContext context) {
+    final Recipe recipe =
+        (context.findAncestorWidgetOfExactType<RecipeCard>()!).recipe;
+
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: _RecipeImage(imageUrl: recipe.imageUrl),
     );
   }
 }
 
-/// Colored placeholder shown when there is no image URL or it fails.
-class _PlaceholderImage extends StatelessWidget {
-  final bool isLoading;
-  const _PlaceholderImage({this.isLoading = false});
+// ── Image Widget (NEW Clean Version) ───────────────────────────────
+
+class _RecipeImage extends StatelessWidget {
+  final String? imageUrl;
+
+  const _RecipeImage({this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+    if (imageUrl == null || imageUrl!.trim().isEmpty) {
+      return const _PlaceholderImage();
+    }
+
+    return Image.network(
+      imageUrl!,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, progress) {
+        if (progress == null) return child;
+        return const _PlaceholderImage();
+      },
+      errorBuilder: (_, __, ___) => const _PlaceholderImage(),
+    );
+  }
+}
+
+// ── Placeholder ───────────────────────────────────────────────────
+
+class _PlaceholderImage extends StatelessWidget {
+  const _PlaceholderImage();
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceVariant,
       child: Center(
-        child: isLoading
-            ? const CircularProgressIndicator(strokeWidth: 2)
-            : Icon(
-                Icons.restaurant,
-                size: 48,
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-              ),
+        child: Icon(
+          Icons.restaurant_menu_rounded,
+          size: 40,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }
 }
 
-/// Animated heart button for toggling favorites.
+// ── Favorite Button (محسن) ───────────────────────────────────────
+
 class _FavoriteButton extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback? onTap;
 
-  const _FavoriteButton({required this.isFavorite, this.onTap});
+  const _FavoriteButton({
+    required this.isFavorite,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: isFavorite
-              ? Colors.red.withValues(alpha: 0.9)
-              : Colors.black.withValues(alpha: 0.3),
-          shape: BoxShape.circle,
-        ),
+    return IconButton(
+      onPressed: onTap,
+      icon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
         child: Icon(
-          isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: Colors.white,
-          size: 18,
+          isFavorite
+              ? Icons.favorite_rounded
+              : Icons.favorite_border_rounded,
+          key: ValueKey(isFavorite),
+          color: isFavorite ? Colors.redAccent : Colors.white,
         ),
       ),
     );
   }
 }
 
-/// Bottom section of the card: title, cooking time.
+// ── Body ─────────────────────────────────────────────────────────
+
 class _CardBody extends StatelessWidget {
   final Recipe recipe;
-  final ThemeData theme;
 
-  const _CardBody({required this.recipe, required this.theme});
+  const _CardBody({required this.recipe});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Title ───────────────────────────────────────────
           Text(
             recipe.title,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -192,40 +200,11 @@ class _CardBody extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 6),
-
-          // ── Cooking time ─────────────────────────────────────
-          Row(
-            children: [
-              Icon(
-                Icons.schedule_outlined,
-                size: 14,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '${recipe.cookingTime} min',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-
-              // ── Ingredient count (bonus info) ────────────────
-              if (recipe.ingredients.isNotEmpty) ...[
-                const SizedBox(width: 12),
-                Icon(
-                  Icons.list_alt_outlined,
-                  size: 14,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${recipe.ingredients.length} ingredients',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ],
+          Text(
+            '${recipe.cookingTime} min',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
         ],
       ),

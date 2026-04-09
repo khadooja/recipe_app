@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/recipe_provider.dart';
 import 'widgets/empty_state.dart';
 import 'widgets/recipe_card.dart';
+import 'package:flutter/material.dart';
+import '../../providers/recipe_provider1.dart';
+import 'package:recipe_app/data/models/recipe.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_app/features/home/add_recipe_screen.dart';
+import 'package:recipe_app/features/recipe_detail/sliver_toBox_adapter/recipe_detail_body/recipe_detail_screen.dart';
 
 /// ─── Home Screen ──────────────────────────────────────────────────
 ///
@@ -46,22 +49,29 @@ class HomeScreen extends ConsumerWidget {
               ),
             )
           else
-            _RecipeList(ref: ref, recipes: recipes),
+            _RecipeList(ref: ref, recipes: recipes, onTap: _navigateToDetail),
         ],
       ),
 
       // ── FAB: placeholder for Add Recipe screen ─────────────────
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: navigate to AddRecipeScreen in the next step
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Recipe — coming next!')),
-          );
-        },
+        onPressed: () => _navigateToAddRecipe(context),
         icon: const Icon(Icons.add),
         label: const Text('Add Recipe'),
       ),
     );
+  }
+
+  void _navigateToDetail(BuildContext context, Recipe recipe) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => RecipeDetailScreen(recipe: recipe)),
+    );
+  }
+
+  void _navigateToAddRecipe(BuildContext context) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const AddRecipeScreen()));
   }
 }
 
@@ -72,6 +82,7 @@ class HomeScreen extends ConsumerWidget {
 /// Collapsing app bar with the recipe count subtitle.
 class _HomeAppBar extends StatelessWidget {
   final int recipeCount;
+
   const _HomeAppBar({required this.recipeCount});
 
   @override
@@ -114,9 +125,21 @@ class _HomeAppBar extends StatelessWidget {
 /// Full-list view — a [SliverList] of [RecipeCard] tiles.
 class _RecipeList extends StatelessWidget {
   final WidgetRef ref;
-  final List recipes;
+  final List<Recipe> recipes;
+  //final Function(BuildContext, dynamic) onTap;
 
-  const _RecipeList({required this.ref, required this.recipes});
+  const _RecipeList({
+    required this.ref,
+    required this.recipes,
+   // required this.onTap,
+  });
+
+
+  void _navigateToDetail(BuildContext context, dynamic recipe) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => RecipeDetailScreen(recipe: recipe)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,12 +153,7 @@ class _RecipeList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: RecipeCard(
               recipe: recipe,
-              onTap: () {
-                // TODO: navigate to RecipeDetailScreen
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Tapped: ${recipe.title}')),
-                );
-              },
+              onTap: () => _navigateToDetail(context, recipe),
               onFavoriteTap: () {
                 ref.read(recipeProvider.notifier).toggleFavorite(recipe.id);
               },
