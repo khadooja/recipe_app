@@ -55,7 +55,7 @@ class _CardImage extends StatelessWidget {
           // ✅ Hero + Image مفصول
           Hero(
             tag: 'recipe_image_${recipe.id}',
-            child: const _RecipeImageWrapper(),
+            child: _RecipeImageWrapper(recipe: recipe),
           ),
 
           // ✅ Gradient overlay (رجعناه 👌)
@@ -87,13 +87,12 @@ class _CardImage extends StatelessWidget {
 // ── Image Wrapper (يحافظ على AspectRatio) ─────────────────────────
 
 class _RecipeImageWrapper extends StatelessWidget {
-  const _RecipeImageWrapper();
+  final Recipe recipe;
+
+  const _RecipeImageWrapper({required this.recipe});
 
   @override
   Widget build(BuildContext context) {
-    final Recipe recipe =
-        (context.findAncestorWidgetOfExactType<RecipeCard>()!).recipe;
-
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: _RecipeImage(imageUrl: recipe.imageUrl),
@@ -201,7 +200,7 @@ class _CardBody extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${recipe.cookingTime} min',
+            '${recipe.cookTimeMinutes} min',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),

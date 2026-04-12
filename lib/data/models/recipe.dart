@@ -24,10 +24,9 @@ import 'package:hive/hive.dart';
 class Recipe {
   final String id;
   final String title;
-  final String imageUrl;
+  final String? imageUrl;
   final List<String> ingredients;
   final List<String> steps;
-  final int cookingTime;
   final bool isFavorite;
   final int cookTimeMinutes;
   final int? servings;
@@ -39,14 +38,10 @@ class Recipe {
     this.imageUrl = '',
     this.ingredients = const [],
     this.steps = const [],
-    this.cookingTime = 0,   
     this.isFavorite = false,
     this.cookTimeMinutes = 0,
     this.servings,
     this.difficulty,
-
-
-  
   });
 
   // ── Copy With ─────────────────────────────────────────────────────
@@ -63,7 +58,6 @@ class Recipe {
     int? cookTimeMinutes,
     int? servings,
     String? difficulty,
-
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -71,13 +65,10 @@ class Recipe {
       imageUrl: imageUrl ?? this.imageUrl,
       ingredients: ingredients ?? this.ingredients,
       steps: steps ?? this.steps,
-      cookingTime: cookingTime ?? this.cookingTime,
+      cookTimeMinutes: cookTimeMinutes ?? this.cookTimeMinutes,
       isFavorite: isFavorite ?? this.isFavorite,
-      cookTimeMinutes: cookTimeMinutes ?? this.cookingTime,
       servings: servings ?? this.servings,
       difficulty: difficulty ?? this.difficulty,
-
-
     );
   }
 
@@ -90,7 +81,6 @@ class Recipe {
       'imageUrl': imageUrl,
       'ingredients': ingredients,
       'steps': steps,
-      'cookingTime': cookingTime,
       'isFavorite': isFavorite,
       'cookTimeMinutes': cookTimeMinutes,
       'servings': servings,
@@ -106,7 +96,6 @@ class Recipe {
       imageUrl: map['imageUrl'] as String? ?? '',
       ingredients: List<String>.from(map['ingredients'] as List? ?? []),
       steps: List<String>.from(map['steps'] as List? ?? []),
-      cookingTime: map['cookingTime'] as int? ?? 0,
       isFavorite: map['isFavorite'] as bool? ?? false,
       cookTimeMinutes: map['cookTimeMinutes'] as int? ?? 0,
       servings: map['servings'] as int?,
@@ -163,18 +152,17 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       imageUrl: fields[2] as String? ?? '',
       ingredients: (fields[3] as List?)?.cast<String>() ?? [],
       steps: (fields[4] as List?)?.cast<String>() ?? [],
-      cookingTime: fields[5] as int? ?? 0,
+      cookTimeMinutes: fields[5] as int? ?? 0,
       isFavorite: fields[6] as bool? ?? false,
-      cookTimeMinutes: fields[7] as int? ?? 0,
-      servings: fields[8] as int?,
-      difficulty: fields[9] as String?,
+      servings: fields[7] as int?,
+      difficulty: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Recipe obj) {
     writer
-      ..writeByte(7) // number of fields
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -186,14 +174,12 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       ..writeByte(4)
       ..write(obj.steps)
       ..writeByte(5)
-      ..write(obj.cookingTime)
+      ..write(obj.cookTimeMinutes)
       ..writeByte(6)
       ..write(obj.isFavorite)
       ..writeByte(7)
-      ..write(obj.cookTimeMinutes)
-      ..writeByte(8)
       ..write(obj.servings)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.difficulty);
   }
 }

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
 import 'data/models/recipe.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// App entry point.
 ///
@@ -30,5 +30,6 @@ Future<void> main() async {
 
   // 4. ProviderScope is the root of the Riverpod provider tree.
   //    Every provider in the app is scoped to this widget.
+  await Hive.openBox<Recipe>('recipes');
   runApp(const ProviderScope(child: RecipeApp()));
 }

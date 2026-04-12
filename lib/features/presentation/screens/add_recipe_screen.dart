@@ -6,8 +6,6 @@ import 'package:recipe_app/features/presentation/widgets/_SubmitButton.dart';
 import 'package:recipe_app/features/presentation/widgets/_RecipeFormFields.dart';
 // lib/presentation/screens/add_recipe_screen.dart
 
-
-
 class AddRecipeScreen extends ConsumerStatefulWidget {
   const AddRecipeScreen({super.key});
 
@@ -19,13 +17,13 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
-  final _titleController        = TextEditingController();
-  final _cookTimeController     = TextEditingController();
-  final _servingsController     = TextEditingController();
-  final _difficultyController   = TextEditingController();
-  final _ingredientsController  = TextEditingController();
-  final _stepsController        = TextEditingController();
-  final _imageUrlController     = TextEditingController();
+  final _titleController = TextEditingController();
+  final _cookTimeController = TextEditingController();
+  final _servingsController = TextEditingController();
+  final _difficultyController = TextEditingController();
+  final _ingredientsController = TextEditingController();
+  final _stepsController = TextEditingController();
+  final _imageUrlController = TextEditingController();
 
   bool _isSubmitting = false;
 
@@ -41,24 +39,40 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     super.dispose();
   }
 
-  Future<void> _submit(dynamic imageUrlController) async {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
 
+    final cookTimeText = _cookTimeController.text.trim();
+
+    if (cookTimeText.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Cook time required')));
+      return;
+    }
+
     final recipe = Recipe(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleController.text.trim(),
-      cookTimeMinutes: int.parse(_cookTimeController.text.trim()),
+
+      cookTimeMinutes: int.parse(cookTimeText),
+
       servings: int.tryParse(_servingsController.text.trim()),
+
       difficulty: _difficultyController.text.trim().isEmpty
           ? null
           : _difficultyController.text.trim(),
+
       ingredients: _parseLines(_ingredientsController.text),
       steps: _parseLines(_stepsController.text),
+
+      // ✅ FIX المهم
       imageUrl: _imageUrlController.text.trim().isEmpty
           ? null
-          : imageUrlController.text.trim(),
+          : _imageUrlController.text.trim(),
+
       isFavorite: false,
     );
 
@@ -79,18 +93,13 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   }
 
   /// Splits a multiline textarea into a trimmed, non-empty list.
-  List<String> _parseLines(String raw) => raw
-      .split('\n')
-      .map((l) => l.trim())
-      .where((l) => l.isNotEmpty)
-      .toList();
+  List<String> _parseLines(String raw) =>
+      raw.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Recipe'),
-      ),
+      appBar: AppBar(title: const Text('Add Recipe')),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -98,18 +107,18 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             children: [
               RecipeFormFields(
-                titleController:       _titleController,
-                cookTimeController:    _cookTimeController,
-                servingsController:    _servingsController,
-                difficultyController:  _difficultyController,
+                titleController: _titleController,
+                cookTimeController: _cookTimeController,
+                servingsController: _servingsController,
+                difficultyController: _difficultyController,
                 ingredientsController: _ingredientsController,
-                stepsController:       _stepsController,
-                imageUrlController:    _imageUrlController,
+                stepsController: _stepsController,
+                imageUrlController: _imageUrlController,
               ),
               const SizedBox(height: 32),
               SubmitButton(
                 isSubmitting: _isSubmitting,
-                onPressed: () => _submit(_imageUrlController),
+                onPressed: () => _submit(),
               ),
             ],
           ),

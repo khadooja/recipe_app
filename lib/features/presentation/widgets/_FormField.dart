@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FormField extends StatelessWidget {
-  const FormField({super.key, 
+class AppTextField  extends StatelessWidget {
+  const AppTextField ({super.key, 
     required this.controller,
     required this.label,
     this.hint,

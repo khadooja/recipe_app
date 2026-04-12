@@ -6,7 +6,8 @@ class HomeAppBar extends StatelessWidget {
   final Function(String) onSearchChanged;
   final VoidCallback onFavoritesTap;
 
-  const HomeAppBar({super.key, 
+  const HomeAppBar({
+    super.key,
     required this.recipeCount,
     required this.searchController,
     required this.onSearchChanged,
@@ -18,40 +19,40 @@ class HomeAppBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SliverAppBar(
-      expandedHeight: 150,
+      expandedHeight: 150, // ✅ مناسب بدون overflow
       floating: true,
       pinned: true,
       backgroundColor: theme.colorScheme.surface,
+
       actions: [
-        IconButton(icon: const Icon(Icons.favorite), onPressed: onFavoritesTap),
+        IconButton(
+          icon: const Icon(Icons.favorite),
+          onPressed: onFavoritesTap,
+        ),
       ],
+
+      // 🔥 عنوان بسيط عشان ما يصير فراغ أو ضغط
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Recipes',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            if (recipeCount > 0)
-              Text('$recipeCount recipes', style: theme.textTheme.bodySmall),
-          ],
+        title: Text(
+          'Recipes',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
+
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(70), // ✅ زيادة بسيطة تمنع overflow
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: TextField(
             controller: searchController,
             onChanged: onSearchChanged,
             decoration: InputDecoration(
               hintText: 'Search recipes...',
               prefixIcon: const Icon(Icons.search),
+
               suffixIcon: searchController.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.clear),
@@ -61,8 +62,15 @@ class HomeAppBar extends StatelessWidget {
                       },
                     )
                   : null,
+
               filled: true,
               fillColor: theme.colorScheme.surfaceVariant,
+
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
+              ),
+
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -74,5 +82,3 @@ class HomeAppBar extends StatelessWidget {
     );
   }
 }
-
-

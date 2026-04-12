@@ -26,14 +26,14 @@ class RecipeFormFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FormField(
+        AppTextField(
           controller: titleController,
           label: 'Title',
           hint: 'e.g. Spaghetti Carbonara',
           validator: _requiredValidator('Title'),
           textInputAction: TextInputAction.next,
         ),
-        FormField(
+        AppTextField (
           controller: cookTimeController,
           label: 'Cooking Time (minutes)',
           hint: 'e.g. 30',
@@ -45,7 +45,7 @@ class RecipeFormFields extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: FormField(
+              child: AppTextField (
                 controller: servingsController,
                 label: 'Servings',
                 hint: 'e.g. 4',
@@ -56,7 +56,7 @@ class RecipeFormFields extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: FormField(
+              child: AppTextField (
                 controller: difficultyController,
                 label: 'Difficulty',
                 hint: 'Easy / Medium / Hard',
@@ -65,7 +65,7 @@ class RecipeFormFields extends StatelessWidget {
             ),
           ],
         ),
-        FormField(
+        AppTextField (
           controller: ingredientsController,
           label: 'Ingredients',
           hint: 'One ingredient per line\ne.g. 200g pasta',
@@ -74,7 +74,7 @@ class RecipeFormFields extends StatelessWidget {
           textInputAction: TextInputAction.newline,
           validator: _requiredValidator('Ingredients'),
         ),
-        FormField(
+        AppTextField (
           controller: stepsController,
           label: 'Steps',
           hint: 'One step per line\ne.g. Boil water',
@@ -83,7 +83,7 @@ class RecipeFormFields extends StatelessWidget {
           textInputAction: TextInputAction.newline,
           validator: _requiredValidator('Steps'),
         ),
-        FormField(
+        AppTextField (
           controller: imageUrlController,
           label: 'Image URL (optional)',
           hint: 'https://...',
