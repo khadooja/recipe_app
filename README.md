@@ -4,7 +4,7 @@ A modern and clean Recipe Application built using Flutter.
 The app allows users to create, browse, and manage recipes with a smooth and intuitive UI experience.
 
 ---
-
+![App Preview] (https://github.com/khadooja/recipe_app/blob/main/Group%201.png?raw=true)
 ## ✨ Features
 
 - 📋 Add new recipes with details (title, ingredients, steps, etc.)
