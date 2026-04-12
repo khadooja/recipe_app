@@ -1,202 +1,62 @@
-# 🍳 Flutter Recipe App
+# 🍽️ Recipe App
 
-A scalable Flutter application built using Clean Architecture, Riverpod, and Hive.
-
-> This project demonstrates production-level structure, state management, and local persistence.
-
----
-# Flutter Recipe App — Project Foundation
-
-Set up a clean, scalable project foundation for a Recipe App before any UI work begins.
+A modern and clean Recipe Application built using Flutter.  
+The app allows users to create, browse, and manage recipes with a smooth and intuitive UI experience.
 
 ---
 
-## 1. Folder Structure
+## ✨ Features
 
-```
-lib/
-├── main.dart                      # App entry point, provider scope, Hive init
-├── app.dart                       # MaterialApp widget (theme, routes)
-│
-├── core/                          # Shared utilities & constants
-│   ├── constants/
-│   │   └── app_constants.dart     # Hive box names, default values
-│   ├── theme/
-│   │   └── app_theme.dart         # ThemeData (for future UI step)
-│   └── utils/
-│       └── id_generator.dart      # UUID helper
-│
-├── data/                          # Data layer (models, storage, repositories)
-│   ├── models/
-│   │   └── recipe.dart            # Recipe data model + Hive TypeAdapter
-│   ├── datasources/
-│   │   └── local/
-│   │       └── recipe_local_datasource.dart  # Hive CRUD operations
-│   └── repositories/
-│       └── recipe_repository.dart            # Abstracts datasource for providers
-│
-├── providers/                     # Application state (Riverpod)
-│   └── recipe_provider.dart       # StateNotifier + provider for recipe list
-│
-└── features/                      # Feature-based screens (empty for now)
-    ├── home/
-    │   └── .gitkeep
-    ├── recipe_detail/
-    │   └── .gitkeep
-    ├── favorites/
-    │   └── .gitkeep
-    └── search/
-        └── .gitkeep
-```
-
-**Why this structure?**
-- **`data/`** owns models, storage, and repository — nothing else touches Hive directly.
-- **`providers/`** owns all Riverpod state — screens just `ref.watch`.
-- **`features/`** groups screens by feature so adding Favorites or Search later is just a new folder.
-- **`core/`** holds cross-cutting concerns (theme, constants, utils).
+- 📋 Add new recipes with details (title, ingredients, steps, etc.)
+- ❤️ Mark/unmark recipes as favorites
+- 🔍 Real-time search functionality
+- 🕒 Display cooking time, servings, and difficulty level
+- 💾 Local database storage using Hive (offline support)
+- ⚡ State management using Riverpod
+- 🎨 Clean and responsive UI design
 
 ---
 
-## 2. Recipe Data Model
+## 📱 Screens
 
-```dart
-class Recipe {
-  final String id;
-  final String title;
-  final String description;
-  final List<String> ingredients;
-  final List<String> steps;
-  final int cookingTimeMinutes;
-  final String category;        // e.g. "Breakfast", "Dinner"
-  final String imagePath;       // local asset or URL
-  final bool isFavorite;        // ready for favorites feature
-  final DateTime createdAt;
-}
-```
-
-- Hive TypeAdapter will be **hand-written** (no build_runner dependency for now; keeps the setup lightweight).
-- `isFavorite` is baked in from day one so toggling favorites later is a one-line change.
-- `id` uses the `uuid` package for collision-free IDs.
+- Home Screen (Recipe list + search bar)
+- Recipe Details Screen (Full recipe view)
+- Add Recipe Screen (Form to create recipes)
+- Favorites Screen (Saved recipes)
 
 ---
 
-## 3. State Management: **Riverpod** (flutter_riverpod)
+## 🧠 Architecture
 
-| Criterion | Provider (pkg) | Riverpod |
-|---|---|---|
-| Compile-time safety | ❌ runtime errors on missing providers | ✅ compile-time checked |
-| Testability | Harder (needs widget tree) | Easy (override in ProviderScope) |
-| No `BuildContext` needed | ❌ | ✅ |
-| Multiple providers of same type | Needs workarounds | Native |
-| Learning curve | Lower | Slightly higher |
+This project follows a structured and scalable architecture:
 
-**Recommendation → Riverpod** because:
-1. The app will grow (favorites, search, filters) — Riverpod avoids the "Provider spaghetti" that comes with deeply nested `ChangeNotifierProvider`s.
-2. Testing recipe state without a widget tree is essentially free.
-3. `StateNotifier` gives immutable state updates, which makes bugs easier to trace.
+- **Data Layer**
+  - Models (Recipe model)
+  - Local DataSource (Hive)
+  - Repository pattern
 
-Version: `flutter_riverpod: ^2.6.1`
+- **Presentation Layer**
+  - Screens (UI pages)
+  - Widgets (Reusable components)
 
----
-
-## 4. Local Storage: **Hive** (hive + hive_flutter)
-
-| Criterion | SharedPreferences | Hive |
-|---|---|---|
-| Stores complex objects | ❌ (key-value strings only) | ✅ (TypeAdapters) |
-| Performance | OK for small data | Very fast, even for 1000+ recipes |
-| Querying/filtering | Manual | Box-level iteration, fast |
-| Encryption support | ❌ | ✅ (AES) |
-
-**Recommendation → Hive** because:
-1. A `Recipe` has lists of strings (ingredients, steps) — Hive stores that natively; SharedPreferences requires manual JSON serialization.
-2. Hive boxes can be opened per-feature (e.g. `recipesBox`, `favoritesBox`), keeping data isolated.
-3. Zero platform-channel overhead — pure Dart.
-
-Versions: `hive: ^2.2.3`, `hive_flutter: ^1.1.0`
+- **State Management**
+  - Riverpod (StateNotifier)
 
 ---
 
-## 5. Dependencies To Add
+## 🛠️ Tech Stack
 
-```yaml
-dependencies:
-  flutter_riverpod: ^2.6.1
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  uuid: ^4.5.1
-```
-
-No `build_runner` / `hive_generator` — the TypeAdapter will be hand-written to keep the setup simple and dependency-light.
+- Flutter
+- Dart
+- Riverpod
+- Hive (Local Storage)
 
 ---
 
-## 6. Future-Readiness Hooks
+## 🚀 Getting Started
 
-- Add and manage recipes
-- Mark recipes as favorites ❤️
-- Local storage using Hive
-- Clean and scalable architecture
-- State management using Riverpod
-- Ready for future features (Search, API, etc.)
+To run this project locally:
 
-
----
-
-
-### Core Layer
-#### [NEW] `lib/core/constants/app_constants.dart`
-- Hive box names, default values
-
-#### [NEW] `lib/core/theme/app_theme.dart`
-- Placeholder ThemeData (will be fleshed out in UI step)
-
-#### [NEW] `lib/core/utils/id_generator.dart`
-- Thin wrapper around `uuid` package
-
----
-
-### Data Layer
-#### [NEW] `lib/data/models/recipe.dart`
-- `Recipe` class with `copyWith`, `toMap`, `fromMap`
-- Hand-written `RecipeAdapter` (Hive TypeAdapter)
-
-#### [NEW] `lib/data/datasources/local/recipe_local_datasource.dart`
-- `RecipeLocalDatasource` — open box, CRUD methods
-
-#### [NEW] `lib/data/repositories/recipe_repository.dart`
-- `RecipeRepository` class that delegates to datasource
-
----
-
-### State Layer
-#### [NEW] `lib/providers/recipe_provider.dart`
-- `RecipeNotifier extends StateNotifier<List<Recipe>>`
-- `recipeProvider`, `recipeRepositoryProvider`
-
----
-
-### App Entry
-#### [MODIFY] `lib/main.dart`
-- Initialize Hive, register adapter, wrap app in `ProviderScope`
-
-#### [NEW] `lib/app.dart`
-- `RecipeApp` widget returning `MaterialApp`
-
----
-
-## Verification Plan
-
-### Automated
 ```bash
-flutter pub get          # dependencies resolve
-flutter analyze          # zero errors / warnings
-flutter test             # default widget test still passes (or is updated)
-```
-
-### Manual
-- Confirm folder structure matches the plan
-- Confirm `flutter run` launches without crashes
-
----
-
+flutter pub get
+flutter run
