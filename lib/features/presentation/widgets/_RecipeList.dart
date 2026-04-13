@@ -29,10 +29,7 @@ class RecipeList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: RecipeCard(
               recipe: recipe,
-              onTap: () => _navigateToDetail(context, recipe),
-              onFavoriteTap: () {
-                ref.read(recipeProvider.notifier).toggleFavorite(recipe.id);
-              },
+              //onTap: () => _navigateToDetail(context, recipe),
             ),
           );
         },

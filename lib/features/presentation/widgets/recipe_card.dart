@@ -232,8 +232,8 @@ const _categoryImages = <String, String>{
 const _defaultImage =
     'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80';
 
-String _resolveImage(Recipe recipe) {
-  if (recipe.imagePath.isNotEmpty) return recipe.imagePath;
+String? _resolveImage(Recipe recipe) {
+  if (recipe.imagePath!.isNotEmpty) return recipe.imagePath;
   return _categoryImages[recipe.category] ?? _defaultImage;
 }
 
@@ -280,7 +280,7 @@ class AnimatedRecipeCard extends StatelessWidget {
 
 // ── The card itself ───────────────────────────────────────────────────
 class RecipeCard extends ConsumerWidget {
-  const RecipeCard({super.key, required this.recipe});
+  const RecipeCard({super.key, required this.recipe,});
 
   final Recipe recipe;
 
@@ -344,7 +344,7 @@ class _ImageSection extends StatelessWidget {
           Hero(
             tag: 'recipe_image_${recipe.id}',
             child: Image.network(
-              _resolveImage(recipe),
+              _resolveImage(recipe)!,
               fit: BoxFit.cover,
               loadingBuilder: (_, child, progress) => progress == null
                   ? child
@@ -384,7 +384,7 @@ class _ImageSection extends StatelessWidget {
           Positioned(
             top: 10,
             left: 10,
-            child: _CategoryBadge(category: recipe.category),
+            child: _CategoryBadge(category: recipe.category ?? 'Uncategorized'),
           ),
           // cook time chip
           Positioned(
@@ -394,7 +394,7 @@ class _ImageSection extends StatelessWidget {
               children: [
                 _InfoChip(
                   icon: Icons.schedule_rounded,
-                  label: '${recipe.cookingTimeMinutes} min',
+                  label: '${recipe.cookTimeMinutes} min',
                 ),
               ],
             ),
@@ -496,10 +496,10 @@ class _BodySection extends StatelessWidget {
               _FavoriteButton(recipe: recipe, ref: ref),
             ],
           ),
-          if (recipe.description.isNotEmpty) ...[
+          if (recipe.description?.isNotEmpty == true) ...[
             const SizedBox(height: 4),
             Text(
-              recipe.description,
+              recipe.description ?? '',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: cs.onSurfaceVariant,
                 height: 1.4,
@@ -538,7 +538,7 @@ class _MetaRow extends StatelessWidget {
         Icon(Icons.local_fire_department_outlined,
             size: 14, color: cs.onSurfaceVariant),
         const SizedBox(width: 4),
-        Text(recipe.category, style: style),
+        Text(recipe.category ?? 'Uncategorized', style: style),
         const Spacer(),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

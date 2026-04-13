@@ -33,6 +33,7 @@ class Recipe {
   final String? difficulty;
   final String? category;
   final String? description;
+  final String? imagePath;
 
   const Recipe({
     required this.id,
@@ -46,6 +47,7 @@ class Recipe {
     this.difficulty,
     this.category,
     this.description,
+    this.imagePath,
   });
 
   // ── Copy With ─────────────────────────────────────────────────────
@@ -64,6 +66,7 @@ class Recipe {
     String? difficulty,
     String? category,
     String? description,
+    String? imagePath,
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -77,6 +80,7 @@ class Recipe {
       difficulty: difficulty ?? this.difficulty,
       category: category ?? this.category,
       description: description ?? this.description,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 
@@ -95,6 +99,7 @@ class Recipe {
       'difficulty': difficulty,
       'category': category,
       'description': description,
+      'imagePath': imagePath,
     };
   }
 
@@ -112,6 +117,7 @@ class Recipe {
       difficulty: map['difficulty'] as String?,
       category: map['category'] as String? ?? '',
       description: map['description'] as String?,
+      imagePath: map['imagePath'] as String?,
     );
   }
 
@@ -170,6 +176,7 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       difficulty: fields[8] as String?,
       category: fields[9] as String? ?? '',
       description: fields[10] as String?,
+      imagePath: fields[11] as String?,
     );
   }
 
@@ -198,6 +205,8 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       ..writeByte(9)
       ..write(obj.category)
       ..writeByte(10)
-      ..write(obj.description);
+      ..write(obj.description)
+      ..writeByte(11)
+      ..write(obj.imagePath);
   }
 }

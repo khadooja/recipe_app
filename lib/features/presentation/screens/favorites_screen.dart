@@ -27,7 +27,7 @@ class FavoritesScreen extends ConsumerWidget {
             const SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.favorite_border,
-                message: 'No favorites yet.\nTap the heart on any recipe!',
+                title: 'No Favorites Yet', subtitle: 'Tap the heart icon on a recipe to add it here.',  
               ),
             )
           else
