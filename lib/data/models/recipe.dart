@@ -31,6 +31,8 @@ class Recipe {
   final int cookTimeMinutes;
   final int? servings;
   final String? difficulty;
+  final String? category;
+  final String? description;
 
   const Recipe({
     required this.id,
@@ -42,6 +44,8 @@ class Recipe {
     this.cookTimeMinutes = 0,
     this.servings,
     this.difficulty,
+    this.category,
+    this.description,
   });
 
   // ── Copy With ─────────────────────────────────────────────────────
@@ -58,6 +62,8 @@ class Recipe {
     int? cookTimeMinutes,
     int? servings,
     String? difficulty,
+    String? category,
+    String? description,
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -69,6 +75,8 @@ class Recipe {
       isFavorite: isFavorite ?? this.isFavorite,
       servings: servings ?? this.servings,
       difficulty: difficulty ?? this.difficulty,
+      category: category ?? this.category,
+      description: description ?? this.description,
     );
   }
 
@@ -85,6 +93,8 @@ class Recipe {
       'cookTimeMinutes': cookTimeMinutes,
       'servings': servings,
       'difficulty': difficulty,
+      'category': category,
+      'description': description,
     };
   }
 
@@ -100,6 +110,8 @@ class Recipe {
       cookTimeMinutes: map['cookTimeMinutes'] as int? ?? 0,
       servings: map['servings'] as int?,
       difficulty: map['difficulty'] as String?,
+      category: map['category'] as String? ?? '',
+      description: map['description'] as String?,
     );
   }
 
@@ -156,6 +168,8 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       isFavorite: fields[6] as bool? ?? false,
       servings: fields[7] as int?,
       difficulty: fields[8] as String?,
+      category: fields[9] as String? ?? '',
+      description: fields[10] as String?,
     );
   }
 
@@ -180,6 +194,10 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       ..writeByte(7)
       ..write(obj.servings)
       ..writeByte(8)
-      ..write(obj.difficulty);
+      ..write(obj.difficulty)
+      ..writeByte(9)
+      ..write(obj.category)
+      ..writeByte(10)
+      ..write(obj.description);
   }
 }
