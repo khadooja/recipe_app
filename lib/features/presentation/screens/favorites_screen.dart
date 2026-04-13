@@ -3,17 +3,20 @@ import '../widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_app/providers/recipe_provider.dart';
-
+import 'package:recipe_app/features/presentation/screens/recipe_detail_screen.dart';
 
 // lib/presentation/screens/favorites_screen.dart
-
 
 class FavoritesScreen extends ConsumerWidget {
   const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favorites = ref.watch(recipeProvider).recipes.where((r) => r.isFavorite).toList();
+    final favorites = ref
+        .watch(recipeProvider)
+        .recipes
+        .where((r) => r.isFavorite)
+        .toList();
 
     return Scaffold(
       body: CustomScrollView(
@@ -27,7 +30,8 @@ class FavoritesScreen extends ConsumerWidget {
             const SliverFillRemaining(
               child: EmptyState(
                 icon: Icons.favorite_border,
-                title: 'No Favorites Yet', subtitle: 'Tap the heart icon on a recipe to add it here.',  
+                title: 'No Favorites Yet',
+                subtitle: 'Tap the heart icon on a recipe to add it here.',
               ),
             )
           else
@@ -35,7 +39,18 @@ class FavoritesScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => RecipeCard(recipe: favorites[index]),
+                  (context, index) => RecipeCard(
+                    recipe: favorites[index],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              RecipeDetailScreen(recipe: favorites[index]),
+                        ),
+                      );
+                    },
+                  ),
                   childCount: favorites.length,
                 ),
               ),

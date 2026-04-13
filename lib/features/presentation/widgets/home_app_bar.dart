@@ -83,7 +83,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
         ),
       ),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
+        preferredSize: const Size.fromHeight(72),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: AnimatedContainer(

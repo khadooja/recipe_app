@@ -232,15 +232,22 @@ const _categoryImages = <String, String>{
 const _defaultImage =
     'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80';
 
-String? _resolveImage(Recipe recipe) {
-  if (recipe.imagePath!.isNotEmpty) return recipe.imagePath;
-  return _categoryImages[recipe.category] ?? _defaultImage;
+String _resolveImage(Recipe recipe) {
+  final url = recipe.imageUrl;
+
+  if (url != null && url.trim().isNotEmpty) {
+    return url;
+  }
+
+  final categoryImage = _categoryImages[recipe.category];
+  return categoryImage ?? _defaultImage;
 }
 
 // ── Animated wrapper ─────────────────────────────────────────────────
 class AnimatedRecipeCard extends StatelessWidget {
   const AnimatedRecipeCard({
     super.key,
+    this.onTap,
     required this.recipe,
     required this.animationController,
     required this.delay,
@@ -249,6 +256,7 @@ class AnimatedRecipeCard extends StatelessWidget {
   final Recipe recipe;
   final AnimationController animationController;
   final Duration delay;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -273,16 +281,24 @@ class AnimatedRecipeCard extends StatelessWidget {
           child: child,
         ),
       ),
-      child: RecipeCard(recipe: recipe),
+      child: RecipeCard(
+        recipe: recipe,
+        onTap: onTap, // 🔥 مررنا الضغط هنا
+      ),
     );
   }
 }
 
 // ── The card itself ───────────────────────────────────────────────────
 class RecipeCard extends ConsumerWidget {
-  const RecipeCard({super.key, required this.recipe,});
+  const RecipeCard({
+    super.key,
+    required this.recipe,
+    this.onTap, // ✅ مهم
+  });
 
   final Recipe recipe;
+  final VoidCallback? onTap; // ✅ مهم
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -297,7 +313,7 @@ class RecipeCard extends ConsumerWidget {
         clipBehavior: Clip.antiAlias,
         elevation: 0,
         child: InkWell(
-          onTap: () {/* navigate to detail */},
+          onTap: onTap, // 🔥 هنا الحل الحقيقي
           borderRadius: BorderRadius.circular(16),
           child: Container(
             decoration: BoxDecoration(
@@ -328,7 +344,6 @@ class RecipeCard extends ConsumerWidget {
     );
   }
 }
-
 // ── Image section ────────────────────────────────────────────────────
 class _ImageSection extends StatelessWidget {
   const _ImageSection({required this.recipe});
@@ -344,7 +359,7 @@ class _ImageSection extends StatelessWidget {
           Hero(
             tag: 'recipe_image_${recipe.id}',
             child: Image.network(
-              _resolveImage(recipe)!,
+              _resolveImage(recipe),
               fit: BoxFit.cover,
               loadingBuilder: (_, child, progress) => progress == null
                   ? child
