@@ -5,13 +5,13 @@ class ImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      child: Center(
+    return Container(
+      color: const Color(0xFFE0E0E0),
+      child: const Center(
         child: Icon(
-          Icons.restaurant_menu_rounded,
-          size: 64,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          Icons.image_outlined,
+          size: 40,
+          color: Color(0xFF9E9E9E),
         ),
       ),
     );

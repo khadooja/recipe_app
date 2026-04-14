@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:recipe_app/core/helpers/image_placeholder.dart';
 import 'package:recipe_app/features/presentation/widgets/_ImageLoadingIndicator.dart';
 
@@ -16,7 +16,6 @@ class RecipeImage extends StatelessWidget {
     return Image.network(
       imageUrl!,
       fit: BoxFit.cover,
-      // Show a shimmer-style container while loading
       loadingBuilder: (context, child, progress) {
         if (progress == null) return child;
         return ImageLoadingIndicator(progress: progress);
